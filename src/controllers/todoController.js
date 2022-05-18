@@ -1,25 +1,70 @@
-exports.get = (req, res) => {
-  const id = req.params.id;
-  console.log('Get');
-  res.send(`OK GET id=${id}`);
+const TodoService = require('../services/TodoService');
+
+exports.get = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const todo = await TodoService.getTodoById(id);
+
+    if (!todo) {
+      return res.status(404).json('Todo not found');
+    }
+
+    res.json(todo);
+  } catch (error) {
+    return res.status(500).json({ error: error });
+  }
 };
 
-exports.getAll = (req, res) => {
-  console.log('Get All');
-  res.send('OK GET All');
+exports.getAll = async (req, res) => {
+  try {
+    const todos = await TodoService.getAllTodos();
+
+    if (!todos) {
+      return res.status(404).json('There are no todos published yet!');
+    }
+
+    res.json(todos);
+  } catch (error) {
+    return res.status(500).json({ error: error });
+  }
 };
 
-exports.add = (req, res) => {
-  console.log('Add');
-  res.send('OK Add');
+exports.add = async (req, res) => {
+  try {
+    const createdTodo = await TodoService.addTodo(req.body);
+    res.status(201).json(createdTodo);
+  } catch (error) {
+    res.status(500).json({ error: error });
+  }
 };
 
-exports.update = (req, res) => {
-  console.log('Update');
-  res.send('OK Update');
+exports.update = async (req, res) => {
+  try {
+    const id = req.body.params.id;
+    const todo = {
+      title: req.body.title,
+      description: req.body.description,
+      finished: req.body.finished,
+    };
+
+    const updatedTodo = await TodoService.updateTodo(id, todo);
+
+    if (updatedTodo.nModified === 0) {
+      return res.status(404).json({});
+    }
+
+    res.status(201).json(updateTodo);
+  } catch (error) {
+    res.status(500).json({ error: error });
+  }
 };
 
-exports.delete = (req, res) => {
-  console.log('Delete');
-  res.send('OK Delete');
+exports.delete = async (req, res) => {
+  try {
+    const id = req.body.params.id;
+    const deletedTodo = await TodoService.deleteTodoById(id);
+    res.status(201).json(deletedTodo);
+  } catch (error) {
+    res.status(500).json({ error: error });
+  }
 };
