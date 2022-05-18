@@ -8,7 +8,6 @@ exports.get = async (req, res) => {
     if (!todo) {
       return res.status(404).json('Todo not found');
     }
-
     res.json(todo);
   } catch (error) {
     return res.status(500).json({ error: error });
@@ -40,7 +39,7 @@ exports.add = async (req, res) => {
 
 exports.update = async (req, res) => {
   try {
-    const id = req.body.params.id;
+    const id = req.params.id;
     const todo = {
       title: req.body.title,
       description: req.body.description,
@@ -53,7 +52,7 @@ exports.update = async (req, res) => {
       return res.status(404).json({});
     }
 
-    res.status(201).json(updateTodo);
+    res.json(updatedTodo);
   } catch (error) {
     res.status(500).json({ error: error });
   }
@@ -61,9 +60,9 @@ exports.update = async (req, res) => {
 
 exports.delete = async (req, res) => {
   try {
-    const id = req.body.params.id;
+    const id = req.params.id;
     const deletedTodo = await TodoService.deleteTodoById(id);
-    res.status(201).json(deletedTodo);
+    res.json(deletedTodo);
   } catch (error) {
     res.status(500).json({ error: error });
   }
