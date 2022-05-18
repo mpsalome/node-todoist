@@ -3,7 +3,7 @@ const Todo = require('../models/Todo');
 module.exports = class TodoService {
   static async getTodoById(id) {
     try {
-      const todo = await Todo.findById(id);
+      const todo = await Todo.findById({ _id: id });
       return todo;
     } catch (error) {
       console.log(`Could not fetch todo ${error}`);
